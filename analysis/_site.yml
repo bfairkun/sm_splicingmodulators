@@ -1,0 +1,17 @@
+name: "SM_SplicingModulators"
+output_dir: ../docs
+navbar:
+  title: "SM_SplicingModulators"
+  left:
+  - text: Home
+    href: index.html
+  - text: About
+    href: about.html
+  - text: License
+    href: license.html
+output:
+  workflowr::wflow_html:
+    toc: yes
+    toc_float: no
+    theme: united
+    highlight: textmate

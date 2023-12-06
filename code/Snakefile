@@ -1,0 +1,21 @@
+# The main entry point of your workflow.
+# After configuring, running snakemake -n in a clone of this repository should successfully execute a dry-run of the workflow.
+
+configfile: "config/config.yaml"
+# configfile: "module_workflows/snakemake-workflow_rna-seq/config/config.yaml"
+include: "rules/common.smk"
+
+module rna_seq:
+    snakefile: "module_workflows/snakemake-workflow_rna-seq/Snakefile"
+    prefix: "rna-seq"
+    config: config["rna_seq"]
+use rule * from rna_seq as rna_seq_*
+
+rule all:
+    input:
+        rules.rna_seq_all.input,
+        # The first rule should define the default target files
+        # Subsequent target rules can be specified below. They should start with all_*.
+
+
+include: "rules/other.smk"
