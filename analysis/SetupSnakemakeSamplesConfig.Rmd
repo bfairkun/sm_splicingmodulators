@@ -1,0 +1,120 @@
+---
+title: "SetupSnakemakeSamplesConfig"
+output: html_document
+date: '2023-12-06'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message=F)
+```
+
+## Intro
+
+In this Rmd, I will create a `samples.tsv` file with that will be utilized by the snakemake workflow, and also serve as a useful metadata file... As new samples come in, I may re-run this, and then re-run the snakemake.
+
+```{r}
+library(tidyverse)
+library(RColorBrewer)
+
+PreviousSamples <- read_tsv("/project2/yangili1/bjf79/20211209_JingxinRNAseq/data/202310_FullMetadata.tsv.gz")
+
+PreviousSamples.fastq <-
+  bind_rows(
+    read_tsv("/project2/yangili1/bjf79/20211209_JingxinRNAseq/code/config/samples.3MoleculesOfInterestExperiment.tsv") %>%
+      dplyr::select(sample=SampleName, R1, R2),
+    read_tsv("/project2/yangili1/bjf79/20211209_JingxinRNAseq/code/config/samples.52MoleculeExperiment.tsv") %>%
+      dplyr::select(sample=SampleID, R1, R2),
+    read_tsv("/project2/yangili1/bjf79/20211209_JingxinRNAseq/code/config/samples.chRNAPilotSequencing.tsv") %>%
+      dplyr::select(sample, R1, R2),
+    read_tsv("/project2/yangili1/bjf79/20211209_JingxinRNAseq/code/config/samples.titrationseries.tsv") %>%
+      dplyr::select(sample, R1, R2),
+    read_tsv("/project2/yangili1/bjf79/20211209_JingxinRNAseq/code/config/samples.tsv") %>%
+      dplyr::select(sample, R1, R2)
+  )
+
+```
+
+some quick shell code to make a file list from glob patterns
+
+```{bash, eval=F}
+paste -d'\t' <(ls -1 /cds/yangili1/bjf79/Fastq/20231205_JingxinTitrationAndCombinationExperiment/*/*_R2_*.fastq.gz | perl -lne '$_ =~ m/^.+?CombinationExperiment\/Sample_(.+?)_L00[1-2].+$/; print "$1\tGRCh38_GencodeRelease44Comprehensive"') <(ls -1 /cds/yangili1/bjf79/Fastq/20231205_JingxinTitrationAndCombinationExperiment/*/*_R1_*.fastq.gz) <(ls -1 /cds/yangili1/bjf79/Fastq/20231205_JingxinTitrationAndCombinationExperiment/*/*_R2_*.fastq.gz) > scratch/newsamples.tsv
+```
+
+```{r}
+
+NewSamples.fastq <- read_tsv("../code/scratch/newsamples.tsv", col_names=c("sample", "Genome", "R1", "R2"))
+
+AllSamples.fastq <- bind_rows(PreviousSamples.fastq, NewSamples.fastq)
+
+
+NewSampels.Metadata <- read_csv("../data/J-Wang_SampleSheet_120123.csv") %>%
+  mutate(cell.type = "LCL", libType="polyA") %>%
+  mutate(rep = case_when(
+    str_detect(Sample_Name, "101823$") ~ str_replace(Sample_Name, "DMSO-(.+?)_101823", "\\1"),
+    TRUE ~ str_replace(Sample_Name, "^.+-(.+?)$", "\\1")
+  )) %>%
+  mutate(rep = as.numeric(rep))
+
+TitrationColors <- NewSampels.Metadata %>%
+  filter(Treatment %in% c("SMSM70", "SMSM74") & dose.nM > 0) %>%
+  arrange(Treatment, dose.nM) %>%
+  mutate(color = c(brewer.pal(8,"Greens"), brewer.pal(8,"Oranges"))) %>%
+  dplyr::select(Sample_Name, color) %>%
+  deframe()
+
+NewSampels.Metadata <- NewSampels.Metadata %>%
+  mutate(color = recode(Sample_Name, !!!TitrationColors)) %>%
+  mutate(color = case_when(
+    str_detect(Sample_Name, "DMSO") ~ "#969696",
+    str_detect(color, "^#") ~ color,
+    TRUE ~ "#252525"
+  )) %>%
+  mutate(Sample_Name = case_when(
+    Treatment == "DMSO" & Experiment == "SMSM74_SMSM70_Combination" ~ paste0(Sample_Name, "_Combination"),
+    TRUE ~ Sample_Name
+  ))
+
+All.metadata <- bind_rows(
+  PreviousSamples %>%
+    dplyr::select(Experiment, cell.type, libType, Treatment = treatment, dose.nM, rep, color, old.sample.name),
+  NewSampels.Metadata %>%
+    dplyr::select(Experiment, cell.type, libType, Treatment, dose.nM, rep, color, old.sample.name=Sample_Name)
+) %>%
+  # distinct(Experiment)
+  mutate(Experiment = factor(Experiment, levels=c("Single high dose fibroblast", "Dose response titration", "nascent RNA profiling", "Single high dose LCL", "Exp090823", "SMSMS74_SMSM70_Titration", "SMSM74_SMSM70_Combination"))) %>%
+  group_by(Experiment) %>%
+  mutate(Group = cur_group_id()) %>%
+  ungroup() %>%
+  mutate(ExperimentAlias = Experiment) %>%
+  mutate(Experiment = Group) %>%
+  mutate(sample = paste(Group, cell.type, libType, Treatment, dose.nM, rep, sep="_")) %>%
+  dplyr::select(sample, everything(), -Group)
+
+knitr::kable(All.metadata)
+
+All.metadata %>% 
+  filter(Experiment == "7")
+
+```
+
+now write out sample.tsv and metadata
+
+```{r}
+AllSamples.fastq %>%
+  mutate(sample = case_when(
+    str_detect(sample, "^DMSO-[1-3]$") & str_detect(R1, "Combination") ~ paste(sample, "Combination", sep="_"),
+    TRUE ~ sample)) %>%
+  dplyr::select(old.sample.name = sample, R1, R2) %>%
+  inner_join(All.metadata) %>%
+  # filter(Experiment == "7") %>%
+  mutate(Strandedness = case_when(
+    ExperimentAlias == "Single high dose fibroblast" ~ "U",
+    TRUE ~ "RF"
+  )) %>%
+  mutate(STARGenomeName = "GRCh38_GencodeRelease44Comprehensive") %>%
+  dplyr::select(sample, STARGenomeName, R1, R2, Strandedness, everything()) %>%
+  write_tsv("../code/config/samples.tsv")
+  
+
+```
+

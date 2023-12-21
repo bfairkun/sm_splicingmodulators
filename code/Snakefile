@@ -9,13 +9,26 @@ module rna_seq:
     snakefile: "module_workflows/snakemake-workflow_rna-seq/Snakefile"
     prefix: "rna-seq"
     config: config["rna_seq"]
-use rule * from rna_seq as rna_seq_*
+# Seperate rule import statements for local and non-local rules (as defined in
+# the other workflow). This way, we can keep those rules as local rules,
+# without modifying code in the other workflow and without triggering the
+# warnings about new local rules that aren't defined
+use rule * from rna_seq exclude DownloadFastaAndGtf, CopyFastq, MultiQC as rna_seq_*
+use rule DownloadFastaAndGtf, CopyFastq, MultiQC  from rna_seq as *
+# some rules in the module are shell commands which call a script assuming the workdir is the other workdir. use symlinks for scripts to fix.
+CreateSymlinksOfDir1ContentsIntoDir2("module_workflows/snakemake-workflow_rna-seq/scripts/", "scripts/")
+
+include: "rules/Gather_Rules.smk"
+include: "rules/SplicingAnalysis.smk"
+
 
 rule all:
     input:
+        # expand("rna-seq/Fastq/{sample}.gz", sample=samples.index.unique()),
         rules.rna_seq_all.input,
+        "SplicingAnalysis/AnnotatedJuncs.tsv.gz"
         # The first rule should define the default target files
         # Subsequent target rules can be specified below. They should start with all_*.
+        # "rna-seq/test_script.tsv"
 
 
-include: "rules/other.smk"

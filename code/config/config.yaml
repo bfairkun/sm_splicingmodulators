@@ -3,7 +3,8 @@
 # one row per sample. It can be parsed easily via pandas.
 
 rna_seq:
-    samples: module_workflows/snakemake-workflow_rna-seq/config/samples.tsv
+    samples: config/samples.tsv
+    # samples: module_workflows/snakemake-workflow_rna-seq/config/samples.tsv
     STAR_genomes: module_workflows/snakemake-workflow_rna-seq/config/STAR_Genome_List.tsv
 
     #Prefix for all ReferenceGenomes files... STAR index will be made at {GenomesPrefix}{GenomeName}/

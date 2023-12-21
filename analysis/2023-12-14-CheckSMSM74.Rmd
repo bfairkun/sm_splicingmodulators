@@ -1,0 +1,582 @@
+---
+title: "2023-12-14_CheckSMSM74"
+output: html_document
+date: '2023-12-14'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message=F)
+```
+
+## Intro
+
+load libraries, read in data
+```{r}
+library(tidyverse)
+library(data.table)
+library(edgeR)
+library(biomaRt)
+library(drc)
+
+junctable <- fread("../code/rna-seq/SplicingAnalysis/leafcutter/GRCh38_GencodeRelease44Comprehensive/juncTableBeds/PSI.sorted.bed.gz")
+juncinfo <- fread("../code/SplicingAnalysis/AnnotatedJuncs.tsv.gz")
+
+
+```
+
+tidy data, calculate dose response spearman coef for each junc
+
+```{r}
+junc.longtable <- junctable %>%
+    dplyr::select(c(4,6), contains("X6"), contains("X2")) %>%
+    separate(junc, into=c("chrom", "start", "stop", "cluster"), sep=":", convert=T) %>%
+    mutate(juncname = paste(chrom, start, stop, strand,sep="_")) %>%
+    gather("sample", "PSI",  contains("X6"), contains("X2")) %>%
+    inner_join(juncinfo %>%
+        dplyr::select(juncname, DonorSeq, known_donor, known_acceptor, known_junction, gene_names, gene_ids)) %>%
+    separate(sample, into=c("Experiment", "cell.line", "libType", "treatment", "dose.nM", "rep", convert=T), sep="_") %>%
+    mutate(dose.nM = as.numeric(dose.nM))
+
+
+cor.coefs <- junc.longtable %>%
+  mutate(dose.nM = as.numeric(dose.nM)) %>%
+    group_by(treatment, juncname) %>% 
+    summarize(rho = cor(PSI, dose.nM, method='s')) %>%
+   ungroup()
+
+junc.longtable <- junc.longtable %>%
+    mutate(dose.nM = as.numeric(dose.nM)) %>%
+    inner_join(cor.coefs)
+
+junc.longtable %>%
+  distinct(juncname, treatment, .keep_all=T) %>%
+  filter(!is.na(rho)) %>%
+  mutate(NNGU = substr(DonorSeq, 3,4)) %>%
+  group_by(treatment, NNGU) %>%
+  mutate(n = n()) %>%
+  ungroup() %>%
+  group_by(NNGU) %>%
+  mutate(avg_n = trunc(mean(n))) %>%
+  ungroup() %>%
+  mutate(group = str_glue("{NNGU}; n={avg_n}")) %>%
+  ggplot(aes(x=rho, color=treatment)) +
+  geom_vline(xintercept = 0) +
+  stat_ecdf() +
+  geom_vline(data = . %>%
+               group_by(treatment, group) %>%
+               summarise(median = median(rho)) %>%
+               ungroup(),
+             aes(xintercept=median, color=treatment),
+             linetype='dashed') +
+  facet_wrap(~group) +
+  theme_bw() +
+  labs(title="dose:response cor by NN|GU",y="ecdf", x="spearman rho")
+
+junc.longtable %>%
+  distinct(juncname, treatment, .keep_all=T) %>%
+  filter(!is.na(rho)) %>%
+  mutate(NNGU = substr(DonorSeq, 3,4)) %>%
+  group_by(treatment, NNGU) %>%
+  mutate(n = n()) %>%
+  ungroup() %>%
+  group_by(NNGU) %>%
+  mutate(avg_n = trunc(mean(n))) %>%
+  ungroup() %>%
+  mutate(group = str_glue("{NNGU}; n={avg_n}")) %>%
+  ggplot(aes(x=rho, color=treatment)) +
+  geom_vline(xintercept = 0) +
+  stat_ecdf() +
+  geom_vline(data = . %>%
+               group_by(treatment, group) %>%
+               summarise(median = median(rho)) %>%
+               ungroup(),
+             aes(xintercept=median, color=treatment),
+             linetype='dashed') +
+  facet_wrap(~group) +
+  theme_bw() +
+  labs(title="dose:response cor by NN|GU",y="ecdf", x="spearman rho") +
+  coord_cartesian(xlim=c(-0.5, 0.5))
+```
+
+Hmm.. surprisingly, SMSM74 does not seem to activate GU|GU genome wide like I might have expected. Let's subset just the GU|GU splice sites that most resemble the SMN2 minigene (AAGA|GUAAGTC)
+
+First let's look at the -4, -3 position, of all GU|GU
+
+```{r}
+junc.longtable %>%
+  distinct(juncname, treatment, .keep_all=T) %>%
+  filter(!is.na(rho)) %>%
+  mutate(NNGU = substr(DonorSeq, 3,4)) %>%
+  filter(NNGU == "GT") %>%
+  mutate(NNGUGU = substr(DonorSeq, 1,2)) %>%
+  group_by(treatment, NNGUGU) %>%
+  mutate(n = n()) %>%
+  ungroup() %>%
+  group_by(NNGUGU) %>%
+  mutate(avg_n = trunc(mean(n))) %>%
+  ungroup() %>%
+  mutate(group = str_glue("{NNGUGU}; n={avg_n}")) %>%
+  ggplot(aes(x=rho, color=treatment)) +
+  geom_vline(xintercept = 0) +
+  stat_ecdf() +
+  geom_vline(data = . %>%
+               group_by(treatment, group) %>%
+               summarise(median = median(rho)) %>%
+               ungroup(),
+             aes(xintercept=median, color=treatment),
+             linetype='dashed') +
+  facet_wrap(~group) +
+  theme_bw() +
+  labs(title="dose:response cor by NNGU|GU",y="ecdf", x="spearman rho")
+```
+
+Let's check STAT1 effect
+
+```{r}
+junc.longtable %>%
+  distinct(juncname, treatment, .keep_all=T) %>%
+  filter(!is.na(rho)) %>%
+  mutate(NNGU = substr(DonorSeq, 3,4)) %>%
+  filter(NNGU == "GA") %>%
+  filter(gene_names=="STAT1")
+
+junc.longtable %>%
+  distinct(treatment, dose.nM)
+
+junc.longtable %>%
+  filter(juncname == "chr2_190977025_190978528_-") %>%
+  group_by(treatment) %>%
+  mutate(doseRank = dense_rank(dose.nM)) %>%
+  ungroup() %>%
+  filter(!(treatment %in% c("SMSM70", "SMSM74") & doseRank == 1)) %>%
+  group_by(treatment) %>%
+  mutate(doseRank = dense_rank(dose.nM)) %>%
+  ungroup() %>%
+  ggplot(aes(x=doseRank, y=PSI, color=treatment)) +
+  geom_line()
+
+```
+
+Ok first let's correct the treatment for DMSO samples in the new experiment metadata columns
+
+```{r}
+junc.longtable %>%
+  distinct(Experiment, treatment, dose.nM) %>%
+  arrange(Experiment, treatment, dose.nM)
+
+junc.longtable <- junc.longtable %>%
+  mutate(treatment = case_when(
+    treatment %in% c("SMSM70", "SMSM74") & dose.nM == 0 ~ "DMSO",
+    TRUE ~ treatment
+  )) %>%
+  mutate(dose.nM = case_when(
+    treatment == "DMSO" ~ NA_real_,
+    TRUE ~ dose.nM
+  ))
+
+## Check by remaking stat1 plot
+junc.longtable %>%
+  filter(juncname == "chr2_190977025_190978528_-") %>%
+  group_by(treatment) %>%
+  mutate(doseRank = dense_rank(dose.nM)) %>%
+  ggplot(aes(x=doseRank, y=PSI, color=treatment)) +
+  geom_line()
+
+```
+
+Ok, now let's make a median logFC dose response plot by junc type
+
+```{r}
+junc.longtable <- junc.longtable %>%
+  mutate(NNGU = substr(DonorSeq, 3,4))
+
+ 
+Median.DMSO.PSI <- junc.longtable %>%
+  filter(treatment == "DMSO") %>%
+  group_by(juncname, Experiment) %>%
+  summarise(DMSO.medianPSI = median(PSI, na.rm=T)) %>%
+  ungroup() %>%
+  filter(!is.na(DMSO.medianPSI))
+
+junc.longtable %>%
+  filter(!treatment == "DMSO") %>%
+  inner_join(Median.DMSO.PSI) %>%
+  mutate(PSI.FC = PSI/DMSO.medianPSI) %>%
+  # mutate(PSI.FC = PSI-DMSO.medianPSI) %>%
+  filter(is.finite(PSI.FC)) %>%
+  group_by(treatment) %>%
+  mutate(doseRank = dense_rank(dose.nM)) %>%
+  group_by(NNGU, treatment, doseRank) %>%
+  summarise(Mean = mean(PSI.FC)) %>%
+  mutate(NNGU.BroadClass = case_when(
+    NNGU == "GA" ~ "GA|GU",
+    NNGU == "GT" ~ "GU|GU",
+    NNGU == "AG" ~ "AG|GU",
+    TRUE ~ "All others"
+  )) %>%
+  ggplot(aes(x=doseRank, y=Mean, color=NNGU.BroadClass, group=NNGU)) +
+  geom_line() +
+  scale_color_manual(values=c("GA|GU"="blue", "GU|GU"="red", "AG|GU"="black","All others"="gray"), name="Type of 5'ss") +
+  facet_wrap(~treatment) +
+  theme_bw() +
+  labs(y="Mean FoldChange(PSI)", x="dose rank")
+
+junc.longtable %>%
+  filter(!treatment == "DMSO") %>%
+  inner_join(Median.DMSO.PSI) %>%
+  # mutate(PSI.FC = PSI/DMSO.medianPSI) %>%
+  mutate(PSI.FC = PSI-DMSO.medianPSI) %>%
+  filter(is.finite(PSI.FC)) %>%
+  group_by(treatment) %>%
+  mutate(doseRank = dense_rank(dose.nM)) %>%
+  group_by(NNGU, treatment, doseRank) %>%
+  summarise(Mean = mean(PSI.FC)) %>%
+  mutate(NNGU.BroadClass = case_when(
+    NNGU == "GA" ~ "GA|GU",
+    NNGU == "GT" ~ "GU|GU",
+    NNGU == "AG" ~ "AG|GU",
+    TRUE ~ "All others"
+  )) %>%
+  ggplot(aes(x=doseRank, y=Mean, color=NNGU.BroadClass, group=NNGU)) +
+  geom_line() +
+  scale_color_manual(values=c("GA|GU"="blue", "GU|GU"="red", "AG|GU"="black","All others"="gray"), name="Type of 5'ss") +
+  facet_wrap(~treatment) +
+  theme_bw() +
+  labs(y="Mean DeltaPSI", x="dose rank")
+
+```
+I think these SMSM70 and SMSM74 experiments are just noisier in general... maybe there is a big difference in read depth... let's check.
+
+```{r}
+
+Metadata <- read_tsv("../code/config/samples.tsv") %>%
+  distinct(sample, .keep_all = T)
+
+ReadCounts <- read_tsv("../output/QC/ReadCountsPerSamples.tsv", col_names = c("fn", "counts")) %>%
+  mutate(sample = str_replace(fn, "rna-seq/idxstats/(.+?).txt", "\\1")) %>%
+  inner_join(Metadata)
+
+ReadCounts %>%
+  arrange(Experiment, Treatment, dose.nM) %>%
+  mutate(rn = row_number()) %>%
+  mutate(sample = as.factor(rn)) %>%
+  ggplot(aes(x=sample, y=counts/1E6, fill=color)) +
+  geom_col() +
+  scale_fill_identity() +
+  coord_cartesian(ylim=c(0,300)) +
+  facet_wrap(~ExperimentAlias, scales = "free_x") +
+  theme_bw() +
+  theme(
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  labs(title = "Read counts per experiment", y="Millions of mapped reads")
+
+```
+
+Ok so these SMSM74/SMSM70 titration series were sequenced a bit shallower than previous data, which may explain the noise.
+
+Let's look at gene expression now... I hope that SMSM74 has some unique DE genes that SMSM70 does not. Of course DE analysis is kind of complicated with this experimental set up... For starters, let's plot all these titration series in PCA.
+
+```{r}
+ExpressionTable <- read_tsv("../code/rna-seq/featureCounts/GRCh38_GencodeRelease44Comprehensive/RF.Counts.txt", comment="#") %>%
+  rename_with(~str_replace(.x, "rna-seq/Alignments/STAR_Align/(.+?)/Aligned.sortedByCoord.out.bam", "\\1"), contains(".bam")) %>%
+  mutate(ensembl_gene_id = str_replace(Geneid, "^(.+?)\\..+?$", "\\1"))
+
+ensembl = useMart(biomart="ensembl", dataset="hsapiens_gene_ensembl")
+results <- getBM(attributes=c("ensembl_gene_id","hgnc_symbol","transcript_biotype"),filters = c("transcript_biotype"), values=list("protein_coding"), mart=ensembl)
+
+Count.table <- ExpressionTable %>%
+  inner_join(results) %>%
+  dplyr::select(ensembl_gene_id, hgnc_symbol, starts_with("2"), starts_with("6")) %>%
+  unite(Geneid, ensembl_gene_id, hgnc_symbol) %>%
+  column_to_rownames("Geneid") %>%
+  DGEList() %>%
+  calcNormFactors()
+
+
+Max.CPM <- Count.table %>%
+  cpm(prior.count=0.1, log=T) %>%
+  apply(1, max)
+
+hist(Max.CPM)
+
+CPM.filtered <- Count.table[Max.CPM > 2, ] %>%
+  calcNormFactors() %>%
+  cpm(prior.count=0.1, log=T)
+
+CPM.filtered %>% dim()
+
+pca.results <- CPM.filtered %>%
+  scale() %>% t() %>% prcomp(scale=T) %>%
+  summary()
+
+pca.results$importance %>% matrix(dim(.)) %>%
+  t() %>%
+  as.data.frame() %>%
+  mutate(PC=row_number()) %>%
+  filter(PC<=6) %>%
+  ggplot(aes(x=as.factor(PC), y=V2*100)) +
+  geom_col() +
+  labs(y="Percent var explained")
+
+pca.results$x %>%
+  as.data.frame() %>%
+  rownames_to_column("sample") %>%
+  inner_join(Metadata) %>%
+  ggplot(aes(x=PC1, y=PC2, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()
+
+pca.results$x %>%
+  as.data.frame() %>%
+  rownames_to_column("sample") %>%
+  inner_join(Metadata) %>%
+  ggplot(aes(x=PC2, y=PC3, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()
+
+
+pca.results$x %>%
+  as.data.frame() %>%
+  rownames_to_column("sample") %>%
+  inner_join(Metadata) %>%
+  ggplot(aes(x=PC2, y=PC4, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()
+
+pca.results$x %>%
+  as.data.frame() %>%
+  rownames_to_column("sample") %>%
+  inner_join(Metadata) %>%
+  ggplot(aes(x=PC2, y=PC5, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()
+
+pca.results$x %>%
+  as.data.frame() %>%
+  rownames_to_column("sample") %>%
+  inner_join(Metadata) %>%
+  ggplot(aes(x=PC2, y=PC6, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()
+
+
+```
+
+Ok, there is some a batch effect that is reflected in PC1... but later PCs might capture something unique about SMSM74...
+
+Maybe I should plot effects relative to DMSO within batch and then redo the PCA...
+
+```{r}
+CPM.filtered.long <- CPM.filtered %>%
+  as.data.frame() %>%
+  rownames_to_column("Geneid") %>%
+  pivot_longer(names_to="sample", values_to="log2CPM", -Geneid) %>%
+  inner_join(Metadata) %>%
+  dplyr::rename(treatment = Treatment) %>%
+  mutate(treatment = case_when(
+    treatment %in% c("SMSM70", "SMSM74") & dose.nM == 0 ~ "DMSO",
+    TRUE ~ treatment
+  )) %>%
+  mutate(dose.nM = case_when(
+    treatment == "DMSO" ~ NA_real_,
+    TRUE ~ dose.nM
+  ))
+
+CPM.DMSO <- CPM.filtered.long %>%
+  filter(treatment == "DMSO") %>%
+  group_by(Geneid, Experiment) %>%
+  summarise(DMSO.medianCPM = median(log2CPM, na.rm=T)) %>%
+  ungroup() %>%
+  filter(!is.na(DMSO.medianCPM))
+
+log2FC.mat <- CPM.filtered.long %>%
+  filter(!treatment == "DMSO") %>%
+  inner_join(CPM.DMSO) %>%
+  mutate(Cpm.log2FC = log2CPM-DMSO.medianCPM) %>%
+  filter(is.finite(Cpm.log2FC)) %>%
+  dplyr::select(sample, Cpm.log2FC, Geneid) %>%
+  pivot_wider(names_from="sample", values_from="Cpm.log2FC")
+
+pca.results <- log2FC.mat %>%
+  column_to_rownames("Geneid") %>%
+  # scale() %>%
+  t() %>%
+  prcomp(scale=F) %>%
+  summary()
+  
+pca.results$importance %>% matrix(dim(.)) %>%
+  t() %>%
+  as.data.frame() %>%
+  mutate(PC=row_number()) %>%
+  filter(PC<=6) %>%
+  ggplot(aes(x=as.factor(PC), y=V2*100)) +
+  geom_col() +
+  labs(y="Percent var explained")
+
+pca.results$x %>%
+  as.data.frame() %>%
+  rownames_to_column("sample") %>%
+  inner_join(Metadata) %>%
+  ggplot(aes(x=PC1, y=PC2, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()
+
+pca.results$x %>%
+  as.data.frame() %>%
+  rownames_to_column("sample") %>%
+  inner_join(Metadata) %>%
+  ggplot(aes(x=PC1, y=PC3, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()
+
+pca.results$x %>%
+  as.data.frame() %>%
+  rownames_to_column("sample") %>%
+  inner_join(Metadata) %>%
+  ggplot(aes(x=PC1, y=PC4, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()
+
+pca.results$x %>%
+  as.data.frame() %>%
+  rownames_to_column("sample") %>%
+  inner_join(Metadata) %>%
+  ggplot(aes(x=PC1, y=PC5, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()
+
+pca.results$x %>%
+  as.data.frame() %>%
+  rownames_to_column("sample") %>%
+  inner_join(Metadata) %>%
+  ggplot(aes(x=PC1, y=PC6, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()
+```
+
+Hmm. well that did sort of what is expected. a batch effect still lingers in later PC2 though. And I'm struggling to find a meaningful PC that really singles out SMSM74. Maybe PC6
+
+Let's look at the loadings for that PC, and check those top genes on IGV, and in dose-response plots, for believable effects that are specific to SMSM74...
+
+```{r}
+GenesOfInterest <- pca.results$rotation %>%
+  as.data.frame() %>%
+  rownames_to_column("Geneid") %>%
+  dplyr::select(Geneid, PC6) %>% arrange(desc(abs(PC6))) %>% head(40)
+
+GenesOfInterest
+
+CPM.filtered.long %>%
+  filter(Geneid %in% GenesOfInterest$Geneid) %>%
+  separate(Geneid, into=c("ensembl_id", "symbol"), remove=F) %>%
+  filter(!treatment == "DMSO") %>%
+  inner_join(CPM.DMSO) %>%
+  mutate(Cpm.log2FC = log2CPM-DMSO.medianCPM) %>%
+  group_by(treatment) %>%
+  mutate(doseRank = dense_rank(dose.nM)) %>%
+  ungroup() %>%
+  ggplot(aes(x=doseRank, y=Cpm.log2FC, color=treatment)) +
+  geom_line() +
+  facet_wrap(~symbol, scales = "free") +
+  theme_bw()
+
+```
+
+Ok based on these, let's plot some genes of interest now:
+
+```{r}
+
+CPM.filtered.long %>%
+  separate(Geneid, into=c("ensembl_id", "symbol"), remove=F) %>%
+  filter(symbol %in% c("HTT", "STAT1", "MYB", "ABCA1", "HSD17B12", "HSD17B4","LMCD1", "LMAN2L", "CDC42", "CDC40", "NPEPPS", "TOMM5", "SEC22A", "ATG5", "LMNA")) %>%
+  filter(!treatment == "DMSO") %>%
+  inner_join(CPM.DMSO) %>%
+  mutate(Cpm.log2FC = log2CPM-DMSO.medianCPM) %>%
+  group_by(treatment) %>%
+  mutate(doseRank = dense_rank(dose.nM)) %>%
+  ungroup() %>%
+  ggplot(aes(x=doseRank, y=Cpm.log2FC, color=treatment)) +
+  geom_line() +
+  facet_wrap(~symbol, scales = "free") +
+  theme_bw()
+```
+
+Ok, I think now I want to look at IGV to hopefully manually identify some of the causal splice juncs in some of these genes. Like CDC40 looks interesting..
+
+To help my browsing, I want to use my scripts to color bigwig plots and plot as groups...
+
+```{r, eval=F}
+Metadata %>%
+  filter(Experiment %in% c(2,6)) %>%
+  mutate(filepath = str_glue("rna-seq/bigwigs/unstranded/{sample}.bw")) %>%
+  mutate(Group = case_when(
+    sample == "2_LCL_polyA_DMSO_NA_1" ~ "2_LCL_polyA_Risdiplam_0",
+    sample == "2_LCL_polyA_DMSO_NA_2" ~ "2_LCL_polyA_Branaplam_0",
+    sample == "2_LCL_polyA_DMSO_NA_3" ~ "2_LCL_polyA_C2C5_0",
+    TRUE ~ as.character(str_glue("{Experiment}_{cell.type}_{Treatment}_{dose.nM}")))) %>%
+  mutate(Strand = ".") %>%
+  dplyr::select(sample, filepath, Group, Strand) %>%
+  write_tsv("../code/scratch/bwList.tsv")
+
+Metadata %>%
+  filter(Experiment %in% c(2,6)) %>%
+  mutate(filepath = str_glue("rna-seq/bigwigs/unstranded/{sample}.bw")) %>%
+  mutate(Group = case_when(
+    sample == "2_LCL_polyA_DMSO_NA_1" ~ "2_LCL_polyA_Risdiplam_0",
+    sample == "2_LCL_polyA_DMSO_NA_2" ~ "2_LCL_polyA_Branaplam_0",
+    sample == "2_LCL_polyA_DMSO_NA_3" ~ "2_LCL_polyA_C2C5_0",
+    TRUE ~ as.character(str_glue("{Experiment}_{cell.type}_{Treatment}_{dose.nM}")))) %>%
+  mutate(Strand = ".") %>%
+  distinct(Group, .keep_all=T) %>%
+  mutate(Supergroup = str_replace(Group, "^.+?_.+?_(.+?)_.+$", "\\1")) %>%
+  dplyr::select(Group, color, bed=Strand, Supergroup) %>%
+  write_tsv("../code/scratch/bw.Groups.tsv")
+
+```
+
+Also, let's do some quick searches find some of the causal juncs in the most interesting genes...
+
+```{r}
+junc.longtable %>%
+  filter(NNGU %in% c("GA", "GT")) %>%
+  filter(gene_names %in% c("TOMM5", "LMCD1", "CDC40", "NPEPPS", "LMNA", "HTT", "STAT1")) %>%
+  filter(!treatment == "DMSO") %>%
+  inner_join(Median.DMSO.PSI) %>%
+  # mutate(PSI.FC = PSI/DMSO.medianPSI) %>%
+  mutate(PSI.FC = PSI-DMSO.medianPSI) %>%
+  filter(is.finite(PSI.FC)) %>%
+  mutate(group=str_glue("{gene_names}\n{juncname}\n{DonorSeq}")) %>%
+  group_by(juncname, treatment) %>%
+  mutate(doseRank = dense_rank(dose.nM)) %>%
+  ggplot(aes(x=doseRank, y=PSI, color=treatment)) +
+  geom_line() +
+  facet_wrap(~group)
+
+
+```
+
+...tinkering with `drc::drm` dose response modelling... Use ED function to calculate ED_x, in where x is the response for which a dose is estimated. x can be specified relative to the max effect (ie ED50), or in absolute terms (same units as response).
+
+```{r}
+ryegrass
+ryegrass.m1 <- drm(rootl ~ conc, data = ryegrass, 
+                   fct = LL.4(names = c("Slope", "Lower Limit", "Upper Limit", "ED50")))
+                   
+plot(ryegrass.m1)
+
+ED(ryegrass.m1, c(50, 99))
+
+ED(ryegrass.m1, c(6, 4, 1), type='absolute')
+```
+

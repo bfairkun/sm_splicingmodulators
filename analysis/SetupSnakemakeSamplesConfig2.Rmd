@@ -1,0 +1,61 @@
+---
+title: "SetupSnakemakeSamplesConfig"
+output: html_document
+date: '2023-12-06'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message=F)
+```
+
+## Intro
+
+In this Rmd, I will create a `samples.tsv` file with that will be utilized by the snakemake workflow, and also serve as a useful metadata file... As new samples come in, I may re-run this, and then re-run the snakemake.
+
+```{r}
+library(tidyverse)
+library(RColorBrewer)
+
+```
+
+```{r}
+NewSamples.Jingxin <- read_tsv("../code/scratch/newsamples.tsv", col_names = c("old.sample.name", "STARGenomeName", "R1", "R2"))
+
+Metadata <- read_tsv("../code/config/samples.tsv")
+
+
+Colors <- Metadata %>%
+  filter(Experiment ==3) %>%
+  distinct(Treatment, dose.nM, color)
+Colors
+
+NewSamples <- read_tsv("../code/scratch/newsamples.20231210.txt", col_names = c("old.sample.name", "STARGenomeName", "R1", "R2")) %>%
+  mutate(Experiment = 8,
+         ExperimentAlias = "SHY5Y_BranaRisdi_polyA_naRNA",
+         cell.type="SHY5Y",
+         Strandedness = "RF") %>%
+  mutate(old.sample.name = str_replace(old.sample.name, "^(.+?)_S.+$", "\\1"))
+
+NewSample.MoreMetadata <- read_csv("../code/scratch/20230809_naRNA_from_SHY5Y_drugSampleList.csv") %>%
+  dplyr::select(old.sample.name=`Sample Alias`, rep=Rep, libType, Treatment, dose.nM) %>%
+  mutate(Treatment = recode(Treatment, "Bran"="Branaplam", "Ris"="Risdiplam"))
+
+Metadata %>%
+  filter(Treatment == "DMSO")
+
+Metadata %>%
+  bind_rows(
+    NewSamples %>%
+      inner_join(NewSample.MoreMetadata) %>%
+      inner_join(Colors) %>%
+      mutate(sample = str_glue("{Experiment}_{cell.type}_{libType}_{Treatment}_{dose.nM}_{rep}"))
+  ) %>%
+  arrange(Experiment, cell.type, libType, Treatment, dose.nM, rep) %>%
+  mutate(sample = as.character(sample)) %>%
+  mutate(sample = case_when(
+    Experiment == 7 & (!Treatment=="DMSO") ~ str_replace(sample, "7_LCL_polyA_Combination_(.+?)_(.+?)_(.+?)_(.+?)_NA_(.+?)", "7_LCL_polyA_Combination.\\1.\\2.\\3.\\4_NA_\\5"),
+    TRUE ~ sample
+  )) %>%
+  write_tsv("../code/config/samples.tsv")
+```
+
