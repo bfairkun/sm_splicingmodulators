@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+<meta name="date" content="2023-12-14" />
+
+<title>2023-12-14_CheckSMSM74</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">SM_SplicingModulators</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">2023-12-14_CheckSMSM74</h1>
+<h4 class="date">2023-12-14</h4>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#intro" id="toc-intro">Intro</a></li>
+</ul>
+</div>
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2024-01-08
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>sm_splicingmodulators/analysis/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed19900924code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(19900924)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed19900924code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(19900924)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombfairkunsmsplicingmodulatorstree4794d47770a04f4d06d1ba9e0fe7a9630668bd2dtargetblank4794d47a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/bfairkun/sm_splicingmodulators/tree/4794d47770a04f4d06d1ba9e0fe7a9630668bd2d" target="_blank">4794d47</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcombfairkunsmsplicingmodulatorstree4794d47770a04f4d06d1ba9e0fe7a9630668bd2dtargetblank4794d47a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/bfairkun/sm_splicingmodulators/tree/4794d47770a04f4d06d1ba9e0fe7a9630668bd2d" target="_blank">4794d47</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    code/.snakemake/
+    Ignored:    code/PlotTitrationstracks.xml
+    Ignored:    code/QC/
+    Ignored:    code/Session.vim
+    Ignored:    code/SplicingAnalysis/
+    Ignored:    code/logs/
+    Ignored:    code/rna-seq/
+    Ignored:    code/scratch/
+    Ignored:    code/scripts/.snakemake
+    Ignored:    code/scripts/BamToBigwig.sh
+    Ignored:    code/scripts/CalcSpearmanForSplicing.R
+    Ignored:    code/scripts/CatIdxStats.R
+    Ignored:    code/scripts/Collapse_Juncsfiles.R
+    Ignored:    code/scripts/leafcutter
+    Ignored:    code/scripts/leafcutter_to_PSI.R
+
+Unstaged changes:
+    Modified:   analysis/2023-12-14-CheckSMSM74.Rmd
+    Modified:   code/module_workflows/snakemake-workflow_rna-seq
+    Modified:   output/QC/ReadCountsPerSamples.tsv
+
+Staged changes:
+    Modified:   code/module_workflows/snakemake-workflow_rna-seq
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/2023-12-14-CheckSMSM74.Rmd</code>) and HTML
+(<code>docs/2023-12-14-CheckSMSM74.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/bfairkun/sm_splicingmodulators/blob/4794d47770a04f4d06d1ba9e0fe7a9630668bd2d/analysis/2023-12-14-CheckSMSM74.Rmd" target="_blank">4794d47</a>
+</td>
+<td>
+Benjmain Fair
+</td>
+<td>
+2023-12-21
+</td>
+<td>
+added workflow
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="intro" class="section level2">
+<h2>Intro</h2>
+<p>load libraries, read in data</p>
+<pre class="r"><code>library(tidyverse)
+library(data.table)
+library(edgeR)
+library(biomaRt)
+library(drc)
+
+junctable &lt;- fread(&quot;../code/rna-seq/SplicingAnalysis/leafcutter/GRCh38_GencodeRelease44Comprehensive/juncTableBeds/PSI.sorted.bed.gz&quot;)
+juncinfo &lt;- fread(&quot;../code/SplicingAnalysis/AnnotatedJuncs.tsv.gz&quot;)</code></pre>
+<p>tidy data, calculate dose response spearman coef for each junc</p>
+<pre class="r"><code>junc.longtable &lt;- junctable %&gt;%
+    dplyr::select(c(4,6), contains(&quot;X6&quot;), contains(&quot;X2&quot;)) %&gt;%
+    separate(junc, into=c(&quot;chrom&quot;, &quot;start&quot;, &quot;stop&quot;, &quot;cluster&quot;), sep=&quot;:&quot;, convert=T) %&gt;%
+    mutate(juncname = paste(chrom, start, stop, strand,sep=&quot;_&quot;)) %&gt;%
+    gather(&quot;sample&quot;, &quot;PSI&quot;,  contains(&quot;X6&quot;), contains(&quot;X2&quot;)) %&gt;%
+    inner_join(juncinfo %&gt;%
+        dplyr::select(juncname, DonorSeq, known_donor, known_acceptor, known_junction, gene_names, gene_ids)) %&gt;%
+    separate(sample, into=c(&quot;Experiment&quot;, &quot;cell.line&quot;, &quot;libType&quot;, &quot;treatment&quot;, &quot;dose.nM&quot;, &quot;rep&quot;, convert=T), sep=&quot;_&quot;) %&gt;%
+    mutate(dose.nM = as.numeric(dose.nM))
+
+
+cor.coefs &lt;- junc.longtable %&gt;%
+  mutate(dose.nM = as.numeric(dose.nM)) %&gt;%
+    group_by(treatment, juncname) %&gt;% 
+    summarize(rho = cor(PSI, dose.nM, method=&#39;s&#39;)) %&gt;%
+   ungroup()
+
+junc.longtable &lt;- junc.longtable %&gt;%
+    mutate(dose.nM = as.numeric(dose.nM)) %&gt;%
+    inner_join(cor.coefs)
+
+junc.longtable %&gt;%
+  distinct(juncname, treatment, .keep_all=T) %&gt;%
+  filter(!is.na(rho)) %&gt;%
+  mutate(NNGU = substr(DonorSeq, 3,4)) %&gt;%
+  group_by(treatment, NNGU) %&gt;%
+  mutate(n = n()) %&gt;%
+  ungroup() %&gt;%
+  group_by(NNGU) %&gt;%
+  mutate(avg_n = trunc(mean(n))) %&gt;%
+  ungroup() %&gt;%
+  mutate(group = str_glue(&quot;{NNGU}; n={avg_n}&quot;)) %&gt;%
+  ggplot(aes(x=rho, color=treatment)) +
+  geom_vline(xintercept = 0) +
+  stat_ecdf() +
+  geom_vline(data = . %&gt;%
+               group_by(treatment, group) %&gt;%
+               summarise(median = median(rho)) %&gt;%
+               ungroup(),
+             aes(xintercept=median, color=treatment),
+             linetype=&#39;dashed&#39;) +
+  facet_wrap(~group) +
+  theme_bw() +
+  labs(title=&quot;dose:response cor by NN|GU&quot;,y=&quot;ecdf&quot;, x=&quot;spearman rho&quot;)</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>junc.longtable %&gt;%
+  distinct(juncname, treatment, .keep_all=T) %&gt;%
+  filter(!is.na(rho)) %&gt;%
+  mutate(NNGU = substr(DonorSeq, 3,4)) %&gt;%
+  group_by(treatment, NNGU) %&gt;%
+  mutate(n = n()) %&gt;%
+  ungroup() %&gt;%
+  group_by(NNGU) %&gt;%
+  mutate(avg_n = trunc(mean(n))) %&gt;%
+  ungroup() %&gt;%
+  mutate(group = str_glue(&quot;{NNGU}; n={avg_n}&quot;)) %&gt;%
+  ggplot(aes(x=rho, color=treatment)) +
+  geom_vline(xintercept = 0) +
+  stat_ecdf() +
+  geom_vline(data = . %&gt;%
+               group_by(treatment, group) %&gt;%
+               summarise(median = median(rho)) %&gt;%
+               ungroup(),
+             aes(xintercept=median, color=treatment),
+             linetype=&#39;dashed&#39;) +
+  facet_wrap(~group) +
+  theme_bw() +
+  labs(title=&quot;dose:response cor by NN|GU&quot;,y=&quot;ecdf&quot;, x=&quot;spearman rho&quot;) +
+  coord_cartesian(xlim=c(-0.5, 0.5))</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Hmm.. surprisingly, SMSM74 does not seem to activate GU|GU genome
+wide like I might have expected. Let’s subset just the GU|GU splice
+sites that most resemble the SMN2 minigene (AAGA|GUAAGTC)</p>
+<p>First let’s look at the -4, -3 position, of all GU|GU</p>
+<pre class="r"><code>junc.longtable %&gt;%
+  distinct(juncname, treatment, .keep_all=T) %&gt;%
+  filter(!is.na(rho)) %&gt;%
+  mutate(NNGU = substr(DonorSeq, 3,4)) %&gt;%
+  filter(NNGU == &quot;GT&quot;) %&gt;%
+  mutate(NNGUGU = substr(DonorSeq, 1,2)) %&gt;%
+  group_by(treatment, NNGUGU) %&gt;%
+  mutate(n = n()) %&gt;%
+  ungroup() %&gt;%
+  group_by(NNGUGU) %&gt;%
+  mutate(avg_n = trunc(mean(n))) %&gt;%
+  ungroup() %&gt;%
+  mutate(group = str_glue(&quot;{NNGUGU}; n={avg_n}&quot;)) %&gt;%
+  ggplot(aes(x=rho, color=treatment)) +
+  geom_vline(xintercept = 0) +
+  stat_ecdf() +
+  geom_vline(data = . %&gt;%
+               group_by(treatment, group) %&gt;%
+               summarise(median = median(rho)) %&gt;%
+               ungroup(),
+             aes(xintercept=median, color=treatment),
+             linetype=&#39;dashed&#39;) +
+  facet_wrap(~group) +
+  theme_bw() +
+  labs(title=&quot;dose:response cor by NNGU|GU&quot;,y=&quot;ecdf&quot;, x=&quot;spearman rho&quot;)</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Let’s check STAT1 effect</p>
+<pre class="r"><code>junc.longtable %&gt;%
+  distinct(juncname, treatment, .keep_all=T) %&gt;%
+  filter(!is.na(rho)) %&gt;%
+  mutate(NNGU = substr(DonorSeq, 3,4)) %&gt;%
+  filter(NNGU == &quot;GA&quot;) %&gt;%
+  filter(gene_names==&quot;STAT1&quot;)</code></pre>
+<pre><code>  chrom     start      stop     cluster strand                   juncname
+1  chr2 190977025 190978528 clu_26478_-      - chr2_190977025_190978528_-
+2  chr2 190977025 190978528 clu_26478_-      - chr2_190977025_190978528_-
+3  chr2 190977025 190978528 clu_26478_-      - chr2_190977025_190978528_-
+4  chr2 190977025 190978528 clu_26478_-      - chr2_190977025_190978528_-
+5  chr2 190977025 190978528 clu_26478_-      - chr2_190977025_190978528_-
+  Experiment cell.line libType treatment dose.nM rep TRUE       PSI    DonorSeq
+1         X6       LCL   polyA    SMSM70     100   1 &lt;NA&gt; 10.787200 AGGAGTAAGCA
+2         X6       LCL   polyA    SMSM74     100   1 &lt;NA&gt;  0.230947 AGGAGTAAGCA
+3         X2       LCL   polyA Branaplam    3160   1 &lt;NA&gt; 54.228900 AGGAGTAAGCA
+4         X2       LCL   polyA      C2C5    1000   1 &lt;NA&gt; 58.474600 AGGAGTAAGCA
+5         X2       LCL   polyA Risdiplam   10000   1 &lt;NA&gt; 51.669600 AGGAGTAAGCA
+  known_donor known_acceptor known_junction gene_names           gene_ids
+1           0              1              0      STAT1 ENSG00000115415.21
+2           0              1              0      STAT1 ENSG00000115415.21
+3           0              1              0      STAT1 ENSG00000115415.21
+4           0              1              0      STAT1 ENSG00000115415.21
+5           0              1              0      STAT1 ENSG00000115415.21
+        rho NNGU
+1 0.9958246   GA
+2 0.9574271   GA
+3 1.0000000   GA
+4 1.0000000   GA
+5 1.0000000   GA</code></pre>
+<pre class="r"><code>junc.longtable %&gt;%
+  distinct(treatment, dose.nM)</code></pre>
+<pre><code>   treatment  dose.nM
+1     SMSM70 1.00e+02
+2     SMSM70 1.00e+01
+3     SMSM70 1.00e+00
+4     SMSM70 1.00e+03
+5     SMSM70 3.16e+01
+6     SMSM70 3.16e+00
+7     SMSM70 3.16e+02
+8     SMSM70 3.16e+03
+9     SMSM74 1.00e+02
+10    SMSM74 1.00e+01
+11    SMSM74 1.00e+04
+12    SMSM74 1.00e+03
+13    SMSM74 3.16e+02
+14    SMSM74 3.16e+00
+15    SMSM74 3.16e+01
+16    SMSM74 3.16e+03
+17    SMSM70 0.00e+00
+18    SMSM74 0.00e+00
+19 Branaplam 3.16e+03
+20 Branaplam 1.00e+03
+21 Branaplam 3.16e+02
+22 Branaplam 1.00e+02
+23 Branaplam 3.16e+01
+24 Branaplam 1.00e+01
+25 Branaplam 3.16e+00
+26 Branaplam 1.00e+00
+27      C2C5 1.00e+03
+28      C2C5 3.16e+02
+29      C2C5 1.00e+02
+30      C2C5 3.16e+01
+31      C2C5 1.00e+01
+32      C2C5 3.16e+00
+33      C2C5 1.00e+00
+34      C2C5 3.16e-01
+35      DMSO       NA
+36 Risdiplam 1.00e+04
+37 Risdiplam 3.16e+03
+38 Risdiplam 1.00e+03
+39 Risdiplam 3.16e+02
+40 Risdiplam 1.00e+02
+41 Risdiplam 3.16e+01
+42 Risdiplam 1.00e+01
+43 Risdiplam 3.16e+00</code></pre>
+<pre class="r"><code>junc.longtable %&gt;%
+  filter(juncname == &quot;chr2_190977025_190978528_-&quot;) %&gt;%
+  group_by(treatment) %&gt;%
+  mutate(doseRank = dense_rank(dose.nM)) %&gt;%
+  ungroup() %&gt;%
+  filter(!(treatment %in% c(&quot;SMSM70&quot;, &quot;SMSM74&quot;) &amp; doseRank == 1)) %&gt;%
+  group_by(treatment) %&gt;%
+  mutate(doseRank = dense_rank(dose.nM)) %&gt;%
+  ungroup() %&gt;%
+  ggplot(aes(x=doseRank, y=PSI, color=treatment)) +
+  geom_line()</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ok first let’s correct the treatment for DMSO samples in the new
+experiment metadata columns</p>
+<pre class="r"><code>junc.longtable %&gt;%
+  distinct(Experiment, treatment, dose.nM) %&gt;%
+  arrange(Experiment, treatment, dose.nM)</code></pre>
+<pre><code>   Experiment treatment  dose.nM
+1          X2 Branaplam 1.00e+00
+2          X2 Branaplam 3.16e+00
+3          X2 Branaplam 1.00e+01
+4          X2 Branaplam 3.16e+01
+5          X2 Branaplam 1.00e+02
+6          X2 Branaplam 3.16e+02
+7          X2 Branaplam 1.00e+03
+8          X2 Branaplam 3.16e+03
+9          X2      C2C5 3.16e-01
+10         X2      C2C5 1.00e+00
+11         X2      C2C5 3.16e+00
+12         X2      C2C5 1.00e+01
+13         X2      C2C5 3.16e+01
+14         X2      C2C5 1.00e+02
+15         X2      C2C5 3.16e+02
+16         X2      C2C5 1.00e+03
+17         X2      DMSO       NA
+18         X2 Risdiplam 3.16e+00
+19         X2 Risdiplam 1.00e+01
+20         X2 Risdiplam 3.16e+01
+21         X2 Risdiplam 1.00e+02
+22         X2 Risdiplam 3.16e+02
+23         X2 Risdiplam 1.00e+03
+24         X2 Risdiplam 3.16e+03
+25         X2 Risdiplam 1.00e+04
+26         X6    SMSM70 0.00e+00
+27         X6    SMSM70 1.00e+00
+28         X6    SMSM70 3.16e+00
+29         X6    SMSM70 1.00e+01
+30         X6    SMSM70 3.16e+01
+31         X6    SMSM70 1.00e+02
+32         X6    SMSM70 3.16e+02
+33         X6    SMSM70 1.00e+03
+34         X6    SMSM70 3.16e+03
+35         X6    SMSM74 0.00e+00
+36         X6    SMSM74 3.16e+00
+37         X6    SMSM74 1.00e+01
+38         X6    SMSM74 3.16e+01
+39         X6    SMSM74 1.00e+02
+40         X6    SMSM74 3.16e+02
+41         X6    SMSM74 1.00e+03
+42         X6    SMSM74 3.16e+03
+43         X6    SMSM74 1.00e+04</code></pre>
+<pre class="r"><code>junc.longtable &lt;- junc.longtable %&gt;%
+  mutate(treatment = case_when(
+    treatment %in% c(&quot;SMSM70&quot;, &quot;SMSM74&quot;) &amp; dose.nM == 0 ~ &quot;DMSO&quot;,
+    TRUE ~ treatment
+  )) %&gt;%
+  mutate(dose.nM = case_when(
+    treatment == &quot;DMSO&quot; ~ NA_real_,
+    TRUE ~ dose.nM
+  ))
+
+## Check by remaking stat1 plot
+junc.longtable %&gt;%
+  filter(juncname == &quot;chr2_190977025_190978528_-&quot;) %&gt;%
+  group_by(treatment) %&gt;%
+  mutate(doseRank = dense_rank(dose.nM)) %&gt;%
+  ggplot(aes(x=doseRank, y=PSI, color=treatment)) +
+  geom_line()</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ok, now let’s make a median logFC dose response plot by junc type</p>
+<pre class="r"><code>junc.longtable &lt;- junc.longtable %&gt;%
+  mutate(NNGU = substr(DonorSeq, 3,4))
+
+ 
+Median.DMSO.PSI &lt;- junc.longtable %&gt;%
+  filter(treatment == &quot;DMSO&quot;) %&gt;%
+  group_by(juncname, Experiment) %&gt;%
+  summarise(DMSO.medianPSI = median(PSI, na.rm=T)) %&gt;%
+  ungroup() %&gt;%
+  filter(!is.na(DMSO.medianPSI))
+
+junc.longtable %&gt;%
+  filter(!treatment == &quot;DMSO&quot;) %&gt;%
+  inner_join(Median.DMSO.PSI) %&gt;%
+  mutate(PSI.FC = PSI/DMSO.medianPSI) %&gt;%
+  # mutate(PSI.FC = PSI-DMSO.medianPSI) %&gt;%
+  filter(is.finite(PSI.FC)) %&gt;%
+  group_by(treatment) %&gt;%
+  mutate(doseRank = dense_rank(dose.nM)) %&gt;%
+  group_by(NNGU, treatment, doseRank) %&gt;%
+  summarise(Mean = mean(PSI.FC)) %&gt;%
+  mutate(NNGU.BroadClass = case_when(
+    NNGU == &quot;GA&quot; ~ &quot;GA|GU&quot;,
+    NNGU == &quot;GT&quot; ~ &quot;GU|GU&quot;,
+    NNGU == &quot;AG&quot; ~ &quot;AG|GU&quot;,
+    TRUE ~ &quot;All others&quot;
+  )) %&gt;%
+  ggplot(aes(x=doseRank, y=Mean, color=NNGU, group=NNGU)) +
+  geom_line() +
+  # scale_color_manual(values=c(&quot;GA|GU&quot;=&quot;blue&quot;, &quot;GU|GU&quot;=&quot;red&quot;, &quot;AG|GU&quot;=&quot;black&quot;,&quot;All others&quot;=&quot;gray&quot;), name=&quot;Type of 5&#39;ss&quot;) +
+  facet_wrap(~treatment) +
+  theme_bw() +
+  labs(y=&quot;Mean FoldChange(PSI)&quot;, x=&quot;dose rank&quot;)</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>junc.longtable %&gt;%
+  filter(!treatment == &quot;DMSO&quot;) %&gt;%
+  inner_join(Median.DMSO.PSI) %&gt;%
+  # mutate(PSI.FC = PSI/DMSO.medianPSI) %&gt;%
+  mutate(PSI.FC = PSI-DMSO.medianPSI) %&gt;%
+  filter(is.finite(PSI.FC)) %&gt;%
+  group_by(treatment) %&gt;%
+  mutate(doseRank = dense_rank(dose.nM)) %&gt;%
+  group_by(NNGU, treatment, doseRank) %&gt;%
+  summarise(Mean = mean(PSI.FC)) %&gt;%
+  mutate(NNGU.BroadClass = case_when(
+    NNGU == &quot;GA&quot; ~ &quot;GA|GU&quot;,
+    NNGU == &quot;GT&quot; ~ &quot;GU|GU&quot;,
+    NNGU == &quot;AG&quot; ~ &quot;AG|GU&quot;,
+    TRUE ~ &quot;All others&quot;
+  )) %&gt;%
+  ggplot(aes(x=doseRank, y=Mean, color=NNGU, group=NNGU)) +
+  geom_line() +
+  # scale_color_manual(values=c(&quot;GA|GU&quot;=&quot;blue&quot;, &quot;GU|GU&quot;=&quot;red&quot;, &quot;AG|GU&quot;=&quot;black&quot;,&quot;All others&quot;=&quot;gray&quot;), name=&quot;Type of 5&#39;ss&quot;) +
+  facet_wrap(~treatment) +
+  theme_bw() +
+  labs(y=&quot;Mean DeltaPSI&quot;, x=&quot;dose rank&quot;)</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" />
+I think these SMSM70 and SMSM74 experiments are just noisier in general…
+maybe there is a big difference in read depth… let’s check.</p>
+<pre class="r"><code>Metadata &lt;- read_tsv(&quot;../code/config/samples.tsv&quot;) %&gt;%
+  distinct(sample, .keep_all = T)
+
+ReadCounts &lt;- read_tsv(&quot;../output/QC/ReadCountsPerSamples.tsv&quot;, col_names = c(&quot;fn&quot;, &quot;counts&quot;)) %&gt;%
+  mutate(sample = str_replace(fn, &quot;rna-seq/idxstats/(.+?).txt&quot;, &quot;\\1&quot;)) %&gt;%
+  inner_join(Metadata)
+
+ReadCounts %&gt;%
+  arrange(Experiment, Treatment, dose.nM) %&gt;%
+  mutate(rn = row_number()) %&gt;%
+  mutate(sample = as.factor(rn)) %&gt;%
+  ggplot(aes(x=sample, y=counts/1E6, fill=color)) +
+  geom_col() +
+  scale_fill_identity() +
+  coord_cartesian(ylim=c(0,300)) +
+  facet_wrap(~ExperimentAlias, scales = &quot;free_x&quot;) +
+  theme_bw() +
+  theme(
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  labs(title = &quot;Read counts per experiment&quot;, y=&quot;Millions of mapped reads&quot;)</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ok so these SMSM74/SMSM70 titration series were sequenced a bit
+shallower than previous data, which may explain the noise.</p>
+<p>Let’s look at gene expression now… I hope that SMSM74 has some unique
+DE genes that SMSM70 does not. Of course DE analysis is kind of
+complicated with this experimental set up… For starters, let’s plot all
+these titration series in PCA.</p>
+<pre class="r"><code>ExpressionTable &lt;- read_tsv(&quot;../code/rna-seq/featureCounts/GRCh38_GencodeRelease44Comprehensive/RF.Counts.txt&quot;, comment=&quot;#&quot;) %&gt;%
+  rename_with(~str_replace(.x, &quot;rna-seq/Alignments/STAR_Align/(.+?)/Aligned.sortedByCoord.out.bam&quot;, &quot;\\1&quot;), contains(&quot;.bam&quot;)) %&gt;%
+  mutate(ensembl_gene_id = str_replace(Geneid, &quot;^(.+?)\\..+?$&quot;, &quot;\\1&quot;))
+
+ensembl = useMart(biomart=&quot;ensembl&quot;, dataset=&quot;hsapiens_gene_ensembl&quot;)
+results &lt;- getBM(attributes=c(&quot;ensembl_gene_id&quot;,&quot;hgnc_symbol&quot;,&quot;transcript_biotype&quot;),filters = c(&quot;transcript_biotype&quot;), values=list(&quot;protein_coding&quot;), mart=ensembl)
+
+Count.table &lt;- ExpressionTable %&gt;%
+  inner_join(results) %&gt;%
+  dplyr::select(ensembl_gene_id, hgnc_symbol, starts_with(&quot;2&quot;), starts_with(&quot;6&quot;)) %&gt;%
+  unite(Geneid, ensembl_gene_id, hgnc_symbol) %&gt;%
+  column_to_rownames(&quot;Geneid&quot;) %&gt;%
+  DGEList() %&gt;%
+  calcNormFactors()
+
+
+Max.CPM &lt;- Count.table %&gt;%
+  cpm(prior.count=0.1, log=T) %&gt;%
+  apply(1, max)
+
+hist(Max.CPM)</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>CPM.filtered &lt;- Count.table[Max.CPM &gt; 2, ] %&gt;%
+  calcNormFactors() %&gt;%
+  cpm(prior.count=0.1, log=T)
+
+CPM.filtered %&gt;% dim()</code></pre>
+<pre><code>[1] 10948    45</code></pre>
+<pre class="r"><code>pca.results &lt;- CPM.filtered %&gt;%
+  scale() %&gt;% t() %&gt;% prcomp(scale=T) %&gt;%
+  summary()
+
+pca.results$importance %&gt;% matrix(dim(.)) %&gt;%
+  t() %&gt;%
+  as.data.frame() %&gt;%
+  mutate(PC=row_number()) %&gt;%
+  filter(PC&lt;=6) %&gt;%
+  ggplot(aes(x=as.factor(PC), y=V2*100)) +
+  geom_col() +
+  labs(y=&quot;Percent var explained&quot;)</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pca.results$x %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column(&quot;sample&quot;) %&gt;%
+  inner_join(Metadata) %&gt;%
+  ggplot(aes(x=PC1, y=PC2, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pca.results$x %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column(&quot;sample&quot;) %&gt;%
+  inner_join(Metadata) %&gt;%
+  ggplot(aes(x=PC2, y=PC3, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-8-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pca.results$x %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column(&quot;sample&quot;) %&gt;%
+  inner_join(Metadata) %&gt;%
+  ggplot(aes(x=PC2, y=PC4, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-8-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pca.results$x %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column(&quot;sample&quot;) %&gt;%
+  inner_join(Metadata) %&gt;%
+  ggplot(aes(x=PC2, y=PC5, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-8-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pca.results$x %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column(&quot;sample&quot;) %&gt;%
+  inner_join(Metadata) %&gt;%
+  ggplot(aes(x=PC2, y=PC6, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-8-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ok, there is some a batch effect that is reflected in PC1… but later
+PCs might capture something unique about SMSM74…</p>
+<p>Maybe I should plot effects relative to DMSO within batch and then
+redo the PCA…</p>
+<pre class="r"><code>CPM.filtered.long &lt;- CPM.filtered %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column(&quot;Geneid&quot;) %&gt;%
+  pivot_longer(names_to=&quot;sample&quot;, values_to=&quot;log2CPM&quot;, -Geneid) %&gt;%
+  inner_join(Metadata) %&gt;%
+  dplyr::rename(treatment = Treatment) %&gt;%
+  mutate(treatment = case_when(
+    treatment %in% c(&quot;SMSM70&quot;, &quot;SMSM74&quot;) &amp; dose.nM == 0 ~ &quot;DMSO&quot;,
+    TRUE ~ treatment
+  )) %&gt;%
+  mutate(dose.nM = case_when(
+    treatment == &quot;DMSO&quot; ~ NA_real_,
+    TRUE ~ dose.nM
+  ))
+
+CPM.DMSO &lt;- CPM.filtered.long %&gt;%
+  filter(treatment == &quot;DMSO&quot;) %&gt;%
+  group_by(Geneid, Experiment) %&gt;%
+  summarise(DMSO.medianCPM = median(log2CPM, na.rm=T)) %&gt;%
+  ungroup() %&gt;%
+  filter(!is.na(DMSO.medianCPM))
+
+log2FC.mat &lt;- CPM.filtered.long %&gt;%
+  filter(!treatment == &quot;DMSO&quot;) %&gt;%
+  inner_join(CPM.DMSO) %&gt;%
+  mutate(Cpm.log2FC = log2CPM-DMSO.medianCPM) %&gt;%
+  filter(is.finite(Cpm.log2FC)) %&gt;%
+  dplyr::select(sample, Cpm.log2FC, Geneid) %&gt;%
+  pivot_wider(names_from=&quot;sample&quot;, values_from=&quot;Cpm.log2FC&quot;)
+
+pca.results &lt;- log2FC.mat %&gt;%
+  column_to_rownames(&quot;Geneid&quot;) %&gt;%
+  # scale() %&gt;%
+  t() %&gt;%
+  prcomp(scale=F) %&gt;%
+  summary()
+  
+pca.results$importance %&gt;% matrix(dim(.)) %&gt;%
+  t() %&gt;%
+  as.data.frame() %&gt;%
+  mutate(PC=row_number()) %&gt;%
+  filter(PC&lt;=6) %&gt;%
+  ggplot(aes(x=as.factor(PC), y=V2*100)) +
+  geom_col() +
+  labs(y=&quot;Percent var explained&quot;)</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pca.results$x %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column(&quot;sample&quot;) %&gt;%
+  inner_join(Metadata) %&gt;%
+  ggplot(aes(x=PC1, y=PC2, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pca.results$x %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column(&quot;sample&quot;) %&gt;%
+  inner_join(Metadata) %&gt;%
+  ggplot(aes(x=PC1, y=PC3, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pca.results$x %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column(&quot;sample&quot;) %&gt;%
+  inner_join(Metadata) %&gt;%
+  ggplot(aes(x=PC1, y=PC4, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-9-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pca.results$x %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column(&quot;sample&quot;) %&gt;%
+  inner_join(Metadata) %&gt;%
+  ggplot(aes(x=PC1, y=PC5, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-9-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pca.results$x %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column(&quot;sample&quot;) %&gt;%
+  inner_join(Metadata) %&gt;%
+  ggplot(aes(x=PC1, y=PC6, color=color)) +
+  geom_point(aes(shape=ExperimentAlias)) +
+  scale_color_identity() +
+  theme_bw()</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-9-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Hmm. well that did sort of what is expected. a batch effect still
+lingers in later PC2 though. And I’m struggling to find a meaningful PC
+that really singles out SMSM74. Maybe PC6</p>
+<p>Let’s look at the loadings for that PC, and check those top genes on
+IGV, and in dose-response plots, for believable effects that are
+specific to SMSM74…</p>
+<pre class="r"><code>GenesOfInterest &lt;- pca.results$rotation %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column(&quot;Geneid&quot;) %&gt;%
+  dplyr::select(Geneid, PC6) %&gt;% arrange(desc(abs(PC6))) %&gt;% head(40)
+
+GenesOfInterest</code></pre>
+<pre><code>                     Geneid         PC6
+1     ENSG00000137975_CLCA2  0.13058825
+2     ENSG00000221890_NPTXR  0.12372967
+3   ENSG00000154252_GAL3ST2 -0.11589259
+4   ENSG00000140459_CYP11A1  0.10746337
+5     ENSG00000101098_RIMS4 -0.10274007
+6       ENSG00000148798_INA  0.10263430
+7    ENSG00000007038_PRSS21  0.10017609
+8      ENSG00000166428_PLD4  0.09257943
+9     ENSG00000071282_LMCD1  0.08222524
+10     ENSG00000111321_LTBR -0.07999613
+11   ENSG00000164125_GASK1B -0.07813862
+12     ENSG00000173156_RHOD  0.07788210
+13   ENSG00000155016_CYP2U1 -0.07619222
+14     ENSG00000109321_AREG  0.07334963
+15    ENSG00000203805_PLPP4 -0.07164181
+16    ENSG00000134202_GSTM3 -0.07162766
+17    ENSG00000173253_DMRT2 -0.07026602
+18     ENSG00000182175_RGMA -0.06893070
+19  ENSG00000198865_CCDC152 -0.06859844
+20      ENSG00000113263_ITK  0.06796957
+21    ENSG00000175768_TOMM5  0.06786299
+22  ENSG00000127578_WFIKKN1 -0.06769109
+23    ENSG00000179820_MYADM -0.06316969
+24 ENSG00000149084_HSD17B12  0.06243662
+25    ENSG00000144712_CAND2 -0.06149096
+26   ENSG00000151640_DPYSL4 -0.05727504
+27  ENSG00000100557_CCDC198  0.05704705
+28    ENSG00000022556_NLRP2 -0.05669793
+29  ENSG00000072133_RPS6KA6 -0.05568656
+30    ENSG00000168438_CDC40  0.05324489
+31   ENSG00000114988_LMAN2L  0.05270010
+32      ENSG00000175793_SFN  0.05197511
+33      ENSG00000167601_AXL  0.05126084
+34    ENSG00000165029_ABCA1  0.05035757
+35     ENSG00000070182_SPTB  0.05035628
+36    ENSG00000136367_ZFHX2 -0.04992230
+37    ENSG00000070831_CDC42 -0.04963907
+38    ENSG00000126970_ZC4H2  0.04906296
+39    ENSG00000161896_IP6K3 -0.04805840
+40   ENSG00000178662_CSRNP3  0.04715268</code></pre>
+<pre class="r"><code>CPM.filtered.long %&gt;%
+  filter(Geneid %in% GenesOfInterest$Geneid) %&gt;%
+  separate(Geneid, into=c(&quot;ensembl_id&quot;, &quot;symbol&quot;), remove=F) %&gt;%
+  filter(!treatment == &quot;DMSO&quot;) %&gt;%
+  inner_join(CPM.DMSO) %&gt;%
+  mutate(Cpm.log2FC = log2CPM-DMSO.medianCPM) %&gt;%
+  group_by(treatment) %&gt;%
+  mutate(doseRank = dense_rank(dose.nM)) %&gt;%
+  ungroup() %&gt;%
+  ggplot(aes(x=doseRank, y=Cpm.log2FC, color=treatment)) +
+  geom_line() +
+  facet_wrap(~symbol, scales = &quot;free&quot;) +
+  theme_bw()</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ok based on these, let’s plot some genes of interest now:</p>
+<pre class="r"><code>CPM.filtered.long %&gt;%
+  separate(Geneid, into=c(&quot;ensembl_id&quot;, &quot;symbol&quot;), remove=F) %&gt;%
+  filter(symbol %in% c(&quot;HTT&quot;, &quot;STAT1&quot;, &quot;MYB&quot;, &quot;ABCA1&quot;, &quot;HSD17B12&quot;, &quot;HSD17B4&quot;,&quot;LMCD1&quot;, &quot;LMAN2L&quot;, &quot;CDC42&quot;, &quot;CDC40&quot;, &quot;NPEPPS&quot;, &quot;TOMM5&quot;, &quot;SEC22A&quot;, &quot;ATG5&quot;, &quot;LMNA&quot;)) %&gt;%
+  filter(!treatment == &quot;DMSO&quot;) %&gt;%
+  inner_join(CPM.DMSO) %&gt;%
+  mutate(Cpm.log2FC = log2CPM-DMSO.medianCPM) %&gt;%
+  group_by(treatment) %&gt;%
+  mutate(doseRank = dense_rank(dose.nM)) %&gt;%
+  ungroup() %&gt;%
+  ggplot(aes(x=doseRank, y=Cpm.log2FC, color=treatment)) +
+  geom_line() +
+  facet_wrap(~symbol, scales = &quot;free&quot;) +
+  theme_bw()</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ok, I think now I want to look at IGV to hopefully manually identify
+some of the causal splice juncs in some of these genes. Like CDC40 looks
+interesting..</p>
+<p>To help my browsing, I want to use my scripts to color bigwig plots
+and plot as groups…</p>
+<pre class="r"><code>Metadata %&gt;%
+  filter(Experiment %in% c(2,6)) %&gt;%
+  mutate(filepath = str_glue(&quot;rna-seq/bigwigs/unstranded/{sample}.bw&quot;)) %&gt;%
+  mutate(Group = case_when(
+    sample == &quot;2_LCL_polyA_DMSO_NA_1&quot; ~ &quot;2_LCL_polyA_Risdiplam_0&quot;,
+    sample == &quot;2_LCL_polyA_DMSO_NA_2&quot; ~ &quot;2_LCL_polyA_Branaplam_0&quot;,
+    sample == &quot;2_LCL_polyA_DMSO_NA_3&quot; ~ &quot;2_LCL_polyA_C2C5_0&quot;,
+    TRUE ~ as.character(str_glue(&quot;{Experiment}_{cell.type}_{Treatment}_{dose.nM}&quot;)))) %&gt;%
+  mutate(Strand = &quot;.&quot;) %&gt;%
+  dplyr::select(sample, filepath, Group, Strand) %&gt;%
+  write_tsv(&quot;../code/scratch/bwList.tsv&quot;)
+
+Metadata %&gt;%
+  filter(Experiment %in% c(2,6)) %&gt;%
+  mutate(filepath = str_glue(&quot;rna-seq/bigwigs/unstranded/{sample}.bw&quot;)) %&gt;%
+  mutate(Group = case_when(
+    sample == &quot;2_LCL_polyA_DMSO_NA_1&quot; ~ &quot;2_LCL_polyA_Risdiplam_0&quot;,
+    sample == &quot;2_LCL_polyA_DMSO_NA_2&quot; ~ &quot;2_LCL_polyA_Branaplam_0&quot;,
+    sample == &quot;2_LCL_polyA_DMSO_NA_3&quot; ~ &quot;2_LCL_polyA_C2C5_0&quot;,
+    TRUE ~ as.character(str_glue(&quot;{Experiment}_{cell.type}_{Treatment}_{dose.nM}&quot;)))) %&gt;%
+  mutate(Strand = &quot;.&quot;) %&gt;%
+  distinct(Group, .keep_all=T) %&gt;%
+  mutate(Supergroup = str_replace(Group, &quot;^.+?_.+?_(.+?)_.+$&quot;, &quot;\\1&quot;)) %&gt;%
+  dplyr::select(Group, color, bed=Strand, Supergroup) %&gt;%
+  write_tsv(&quot;../code/scratch/bw.Groups.tsv&quot;)</code></pre>
+<p>Also, let’s do some quick searches find some of the causal juncs in
+the most interesting genes…</p>
+<pre class="r"><code>junc.longtable %&gt;%
+  filter(NNGU %in% c(&quot;GA&quot;, &quot;GT&quot;)) %&gt;%
+  filter(gene_names %in% c(&quot;TOMM5&quot;, &quot;LMCD1&quot;, &quot;CDC40&quot;, &quot;NPEPPS&quot;, &quot;LMNA&quot;, &quot;HTT&quot;, &quot;STAT1&quot;)) %&gt;%
+  filter(!treatment == &quot;DMSO&quot;) %&gt;%
+  inner_join(Median.DMSO.PSI) %&gt;%
+  # mutate(PSI.FC = PSI/DMSO.medianPSI) %&gt;%
+  mutate(PSI.FC = PSI-DMSO.medianPSI) %&gt;%
+  filter(is.finite(PSI.FC)) %&gt;%
+  mutate(group=str_glue(&quot;{gene_names}\n{juncname}\n{DonorSeq}&quot;)) %&gt;%
+  group_by(juncname, treatment) %&gt;%
+  mutate(doseRank = dense_rank(dose.nM)) %&gt;%
+  ggplot(aes(x=doseRank, y=PSI, color=treatment)) +
+  geom_line() +
+  facet_wrap(~group, scales=&quot;free&quot;)</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>…tinkering with <code>drc::drm</code> dose response modelling… Use ED
+function to calculate ED_x, in where x is the response for which a dose
+is estimated. x can be specified relative to the max effect (ie ED50),
+or in absolute terms (same units as response).</p>
+<pre class="r"><code>ryegrass</code></pre>
+<pre><code>       rootl  conc
+1  7.5800000  0.00
+2  8.0000000  0.00
+3  8.3285714  0.00
+4  7.2500000  0.00
+5  7.3750000  0.00
+6  7.9625000  0.00
+7  8.3555556  0.94
+8  6.9142857  0.94
+9  7.7500000  0.94
+10 6.8714286  1.88
+11 6.4500000  1.88
+12 5.9222222  1.88
+13 1.9250000  3.75
+14 2.8857143  3.75
+15 4.2333333  3.75
+16 1.1875000  7.50
+17 0.8571429  7.50
+18 1.0571429  7.50
+19 0.6875000 15.00
+20 0.5250000 15.00
+21 0.8250000 15.00
+22 0.2500000 30.00
+23 0.2200000 30.00
+24 0.4400000 30.00</code></pre>
+<pre class="r"><code>ryegrass.m1 &lt;- drm(rootl ~ conc, data = ryegrass, 
+                   fct = LL.4(names = c(&quot;Slope&quot;, &quot;Lower Limit&quot;, &quot;Upper Limit&quot;, &quot;ED50&quot;)))
+                   
+plot(ryegrass.m1)</code></pre>
+<p><img src="figure/2023-12-14-CheckSMSM74.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ED(ryegrass.m1, c(50, 99))</code></pre>
+<pre><code>
+Estimated effective doses
+
+       Estimate Std. Error
+e:1:50  3.05795    0.18573
+e:1:99 14.27608    3.57468</code></pre>
+<pre class="r"><code>ED(ryegrass.m1, c(6, 4, 1), type=&#39;absolute&#39;)</code></pre>
+<pre><code>
+Estimated effective doses
+
+      Estimate Std. Error
+e:1:6   2.0975     0.1734
+e:1:4   3.1359     0.1914
+e:1:1   7.2454     1.0868</code></pre>
+<p>Plans, fit expression models, 3 parameters (because lower limit set
+to 0)… then evluate ED_2x, since ED50 is hard to evaluate if the model
+fits have different upper limit.</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.0 (2022-04-22)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: CentOS Linux 7 (Core)
+
+Matrix products: default
+BLAS/LAPACK: /software/openblas-0.3.13-el7-x86_64/lib/libopenblas_haswellp-r0.3.13.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8 LC_NUMERIC=C         LC_TIME=C           
+ [4] LC_COLLATE=C         LC_MONETARY=C        LC_MESSAGES=C       
+ [7] LC_PAPER=C           LC_NAME=C            LC_ADDRESS=C        
+[10] LC_TELEPHONE=C       LC_MEASUREMENT=C     LC_IDENTIFICATION=C 
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] drc_3.0-1         MASS_7.3-56       biomaRt_2.52.0    edgeR_3.38.4     
+ [5] limma_3.52.4      data.table_1.14.2 forcats_0.5.1     stringr_1.4.0    
+ [9] dplyr_1.0.9       purrr_0.3.4       readr_2.1.2       tidyr_1.2.0      
+[13] tibble_3.1.7      ggplot2_3.3.6     tidyverse_1.3.1  
+
+loaded via a namespace (and not attached):
+  [1] TH.data_1.1-1          colorspace_2.0-3       ellipsis_0.3.2        
+  [4] rprojroot_2.0.3        XVector_0.36.0         fs_1.5.2              
+  [7] rstudioapi_0.13        farver_2.1.0           bit64_4.0.5           
+ [10] AnnotationDbi_1.58.0   fansi_1.0.3            mvtnorm_1.1-3         
+ [13] lubridate_1.8.0        xml2_1.3.3             R.methodsS3_1.8.1     
+ [16] codetools_0.2-18       splines_4.2.0          cachem_1.0.6          
+ [19] knitr_1.39             jsonlite_1.8.0         workflowr_1.7.0       
+ [22] broom_0.8.0            dbplyr_2.1.1           R.oo_1.24.0           
+ [25] png_0.1-7              compiler_4.2.0         httr_1.4.3            
+ [28] backports_1.4.1        assertthat_0.2.1       Matrix_1.5-3          
+ [31] fastmap_1.1.0          cli_3.3.0              later_1.3.0           
+ [34] htmltools_0.5.2        prettyunits_1.1.1      tools_4.2.0           
+ [37] gtable_0.3.0           glue_1.6.2             GenomeInfoDbData_1.2.8
+ [40] rappdirs_0.3.3         Rcpp_1.0.8.3           carData_3.0-5         
+ [43] Biobase_2.56.0         cellranger_1.1.0       jquerylib_0.1.4       
+ [46] vctrs_0.4.1            Biostrings_2.64.0      xfun_0.30             
+ [49] rvest_1.0.2            lifecycle_1.0.1        gtools_3.9.2          
+ [52] XML_3.99-0.14          zlibbioc_1.42.0        zoo_1.8-10            
+ [55] scales_1.2.0           vroom_1.5.7            hms_1.1.1             
+ [58] promises_1.2.0.1       parallel_4.2.0         sandwich_3.0-1        
+ [61] yaml_2.3.5             curl_4.3.2             memoise_2.0.1         
+ [64] sass_0.4.1             stringi_1.7.6          RSQLite_2.2.14        
+ [67] highr_0.9              S4Vectors_0.34.0       plotrix_3.8-2         
+ [70] BiocGenerics_0.42.0    filelock_1.0.2         GenomeInfoDb_1.32.2   
+ [73] rlang_1.0.2            pkgconfig_2.0.3        bitops_1.0-7          
+ [76] evaluate_0.15          lattice_0.20-45        labeling_0.4.2        
+ [79] bit_4.0.4              tidyselect_1.1.2       magrittr_2.0.3        
+ [82] R6_2.5.1               IRanges_2.30.0         generics_0.1.2        
+ [85] multcomp_1.4-19        DBI_1.1.2              pillar_1.7.0          
+ [88] haven_2.5.0            whisker_0.4            withr_2.5.0           
+ [91] survival_3.3-1         KEGGREST_1.36.2        abind_1.4-5           
+ [94] RCurl_1.98-1.7         modelr_0.1.8           crayon_1.5.1          
+ [97] car_3.1-1              utf8_1.2.2             BiocFileCache_2.4.0   
+[100] tzdb_0.3.0             rmarkdown_2.14         progress_1.2.2        
+[103] locfit_1.5-9.7         grid_4.2.0             readxl_1.4.0          
+[106] blob_1.2.3             git2r_0.30.1           reprex_2.0.1          
+[109] digest_0.6.29          httpuv_1.6.5           R.utils_2.11.0        
+[112] stats4_4.2.0           munsell_0.5.0          bslib_0.3.1           </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

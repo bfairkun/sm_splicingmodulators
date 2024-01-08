@@ -214,9 +214,9 @@ junc.longtable %>%
     NNGU == "AG" ~ "AG|GU",
     TRUE ~ "All others"
   )) %>%
-  ggplot(aes(x=doseRank, y=Mean, color=NNGU.BroadClass, group=NNGU)) +
+  ggplot(aes(x=doseRank, y=Mean, color=NNGU, group=NNGU)) +
   geom_line() +
-  scale_color_manual(values=c("GA|GU"="blue", "GU|GU"="red", "AG|GU"="black","All others"="gray"), name="Type of 5'ss") +
+  # scale_color_manual(values=c("GA|GU"="blue", "GU|GU"="red", "AG|GU"="black","All others"="gray"), name="Type of 5'ss") +
   facet_wrap(~treatment) +
   theme_bw() +
   labs(y="Mean FoldChange(PSI)", x="dose rank")
@@ -237,9 +237,9 @@ junc.longtable %>%
     NNGU == "AG" ~ "AG|GU",
     TRUE ~ "All others"
   )) %>%
-  ggplot(aes(x=doseRank, y=Mean, color=NNGU.BroadClass, group=NNGU)) +
+  ggplot(aes(x=doseRank, y=Mean, color=NNGU, group=NNGU)) +
   geom_line() +
-  scale_color_manual(values=c("GA|GU"="blue", "GU|GU"="red", "AG|GU"="black","All others"="gray"), name="Type of 5'ss") +
+  # scale_color_manual(values=c("GA|GU"="blue", "GU|GU"="red", "AG|GU"="black","All others"="gray"), name="Type of 5'ss") +
   facet_wrap(~treatment) +
   theme_bw() +
   labs(y="Mean DeltaPSI", x="dose rank")
@@ -561,7 +561,7 @@ junc.longtable %>%
   mutate(doseRank = dense_rank(dose.nM)) %>%
   ggplot(aes(x=doseRank, y=PSI, color=treatment)) +
   geom_line() +
-  facet_wrap(~group)
+  facet_wrap(~group, scales="free")
 
 
 ```
@@ -580,3 +580,4 @@ ED(ryegrass.m1, c(50, 99))
 ED(ryegrass.m1, c(6, 4, 1), type='absolute')
 ```
 
+Plans, fit expression models, 3 parameters (because lower limit set to 0)... then evluate ED_2x, since ED50 is hard to evaluate if the model fits have different upper limit.

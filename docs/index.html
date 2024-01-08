@@ -284,7 +284,7 @@ $(document).ready(function () {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -295,8 +295,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -305,13 +305,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-12-06
+<strong>Last updated:</strong> 2024-01-08
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -335,33 +335,120 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombfairkunsmsplicingmodulatorstreeb2d7ef3e2f268566511985a0917890a1f16c5d1atargetblankb2d7ef3a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed19900924code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(19900924)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed19900924code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(19900924)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombfairkunsmsplicingmodulatorstree4794d47770a04f4d06d1ba9e0fe7a9630668bd2dtargetblank4794d47a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/bfairkun/sm_splicingmodulators/tree/b2d7ef3e2f268566511985a0917890a1f16c5d1a" target="_blank">b2d7ef3</a>
+<a href="https://github.com/bfairkun/sm_splicingmodulators/tree/4794d47770a04f4d06d1ba9e0fe7a9630668bd2d" target="_blank">4794d47</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcombfairkunsmsplicingmodulatorstreeb2d7ef3e2f268566511985a0917890a1f16c5d1atargetblankb2d7ef3a"
+id="strongRepositoryversionstrongahrefhttpsgithubcombfairkunsmsplicingmodulatorstree4794d47770a04f4d06d1ba9e0fe7a9630668bd2dtargetblank4794d47a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -371,7 +458,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/bfairkun/sm_splicingmodulators/tree/b2d7ef3e2f268566511985a0917890a1f16c5d1a" target="_blank">b2d7ef3</a>.
+<a href="https://github.com/bfairkun/sm_splicingmodulators/tree/4794d47770a04f4d06d1ba9e0fe7a9630668bd2d" target="_blank">4794d47</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -386,11 +473,31 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    code/.snakemake/
+    Ignored:    code/PlotTitrationstracks.xml
+    Ignored:    code/QC/
     Ignored:    code/Session.vim
+    Ignored:    code/SplicingAnalysis/
+    Ignored:    code/logs/
+    Ignored:    code/rna-seq/
+    Ignored:    code/scratch/
+    Ignored:    code/scripts/.snakemake
+    Ignored:    code/scripts/BamToBigwig.sh
+    Ignored:    code/scripts/CalcSpearmanForSplicing.R
+    Ignored:    code/scripts/CatIdxStats.R
+    Ignored:    code/scripts/Collapse_Juncsfiles.R
+    Ignored:    code/scripts/leafcutter
+    Ignored:    code/scripts/leafcutter_to_PSI.R
 
 Unstaged changes:
+    Modified:   analysis/2023-12-14-CheckSMSM74.Rmd
+    Modified:   analysis/index.Rmd
+    Modified:   code/module_workflows/snakemake-workflow_rna-seq
+    Modified:   output/QC/ReadCountsPerSamples.tsv
+
+Staged changes:
     Modified:   code/module_workflows/snakemake-workflow_rna-seq
 
 </code></pre>
@@ -438,6 +545,23 @@ Message
 <tbody>
 <tr>
 <td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/bfairkun/sm_splicingmodulators/4794d47770a04f4d06d1ba9e0fe7a9630668bd2d/docs/index.html" target="_blank">4794d47</a>
+</td>
+<td>
+Benjmain Fair
+</td>
+<td>
+2023-12-21
+</td>
+<td>
+added workflow
+</td>
+</tr>
+<tr>
+<td>
 Rmd
 </td>
 <td>
@@ -461,6 +585,74 @@ initial commit
 </div>
 </div>
 <p>Welcome to my research website.</p>
+<div id="full-listing-of-all-rmarkdown-notebooks-by-file-name"
+class="section level2">
+<h2>Full listing of all Rmarkdown notebooks by file name:</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+✔ tibble  3.1.7     ✔ dplyr   1.0.9
+✔ tidyr   1.2.0     ✔ stringr 1.4.0
+✔ readr   2.1.2     ✔ forcats 0.5.1</code></pre>
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>rmds &lt;- list.files(path = &quot;../analysis/&quot;, pattern=&quot;^\\d+.+&quot;)
+rmd_htmls &lt;- str_replace(rmds, &quot;Rmd$&quot;, &quot;html&quot;)
+for(i in rmd_htmls){
+  cat(&quot;[&quot;, i, &quot;](&quot;, i,&quot;)\n\n&quot;, sep=&quot;&quot;)
+}</code></pre>
+<p><a
+href="2023-12-14-CheckSMSM74.html">2023-12-14-CheckSMSM74.html</a></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.0 (2022-04-22)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: CentOS Linux 7 (Core)
+
+Matrix products: default
+BLAS/LAPACK: /software/openblas-0.3.13-el7-x86_64/lib/libopenblas_haswellp-r0.3.13.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8 LC_NUMERIC=C         LC_TIME=C           
+ [4] LC_COLLATE=C         LC_MONETARY=C        LC_MESSAGES=C       
+ [7] LC_PAPER=C           LC_NAME=C            LC_ADDRESS=C        
+[10] LC_TELEPHONE=C       LC_MEASUREMENT=C     LC_IDENTIFICATION=C 
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] forcats_0.5.1   stringr_1.4.0   dplyr_1.0.9     purrr_0.3.4    
+[5] readr_2.1.2     tidyr_1.2.0     tibble_3.1.7    ggplot2_3.3.6  
+[9] tidyverse_1.3.1
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.8.3     lubridate_1.8.0  assertthat_0.2.1 rprojroot_2.0.3 
+ [5] digest_0.6.29    utf8_1.2.2       R6_2.5.1         cellranger_1.1.0
+ [9] backports_1.4.1  reprex_2.0.1     evaluate_0.15    httr_1.4.3      
+[13] pillar_1.7.0     rlang_1.0.2      readxl_1.4.0     rstudioapi_0.13 
+[17] whisker_0.4      jquerylib_0.1.4  rmarkdown_2.14   munsell_0.5.0   
+[21] broom_0.8.0      compiler_4.2.0   httpuv_1.6.5     modelr_0.1.8    
+[25] xfun_0.30        pkgconfig_2.0.3  htmltools_0.5.2  tidyselect_1.1.2
+[29] workflowr_1.7.0  fansi_1.0.3      crayon_1.5.1     tzdb_0.3.0      
+[33] dbplyr_2.1.1     withr_2.5.0      later_1.3.0      grid_4.2.0      
+[37] jsonlite_1.8.0   gtable_0.3.0     lifecycle_1.0.1  DBI_1.1.2       
+[41] git2r_0.30.1     magrittr_2.0.3   scales_1.2.0     cli_3.3.0       
+[45] stringi_1.7.6    fs_1.5.2         promises_1.2.0.1 xml2_1.3.3      
+[49] bslib_0.3.1      ellipsis_0.3.2   generics_0.1.2   vctrs_0.4.1     
+[53] tools_4.2.0      glue_1.6.2       hms_1.1.1        fastmap_1.1.0   
+[57] yaml_2.3.5       colorspace_2.0-3 rvest_1.0.2      knitr_1.39      
+[61] haven_2.5.0      sass_0.4.1      </code></pre>
+</div>
+</div>
 
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
